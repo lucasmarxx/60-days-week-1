@@ -62,8 +62,12 @@ class contaSalario(contaBancaria):
         else:
             print(f'Impossível sacar R${saque:.2f}. Valor em conta: R${self._saldo:.2f}.')
         
-    def depositar(self):
+    def depositar(self, deposito=None):
         raise NotImplementedError('Impossível depositar na conta salário, seu merda')
+    
+    def saque_com_bonus(self, saque, bonus):
+        return super().saque_com_bonus(saque, bonus)
+    
     
 conta1 = contaBancaria(0, 33, 'lucas')
 conta1.depositar(500)
@@ -80,4 +84,6 @@ conta2.depositar_com_taxa(302, 3)
 conta2.saque_com_bonus(300, 10)
 
 salario1 = contaSalario(312, 2, 'luquinhas')
-salario1.sacar(311)
+salario1.sacar(55)
+# salario1.depositar(22)
+salario1.saque_com_bonus(135, 10)
