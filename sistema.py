@@ -1,8 +1,16 @@
+class usuario:
+    def __init__(self, nome, endereco):
+        self.nome = nome
+        self.endereco = endereco
+
+    def dados_usuario(self):
+        self.contaBancaria = contaBancaria()
+
 class contaBancaria:
     def __init__(self, saldo: float, conta: int, id: str):
         self._saldo = saldo
         self._conta = conta
-        self._id = id
+        self._id = id.capitalize()
 
         print(f'Bem vindo à sua conta: <{self._conta}>, id: {self._id}. Seu saldo é de R${self._saldo:.2f}.')
         print('------')
@@ -16,7 +24,7 @@ class contaBancaria:
 
     def sacar(self, saque):
         self.saque = saque
-        if self._saldo >= 0 and self._saldo >= saque:
+        if self._saldo >= saque:
             self._saldo -= saque
             print(f'Saque de R${saque:.2f} na conta <{self._conta}>.')
             print(f'Novo saldo da conta numero <{self._conta}> em nome de <{self._id}>: R${self._saldo:.2f}.')
