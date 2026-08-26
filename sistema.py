@@ -1,3 +1,5 @@
+from context_manager_e_log import log_execucao
+
 class usuario:
     def __init__(self, nome, endereco):
         self.nome = nome
@@ -14,15 +16,14 @@ class contaBancaria:
 
         print(f'Bem vindo à sua conta: <{self._conta}>, id: {self._id}. Seu saldo é de R${self._saldo:.2f}.')
         print('------')
-
+    @log_execucao
     def depositar(self, deposito):
-        self._deposito = deposito
         self._saldo += deposito
         print(f'Valor em saldo: R${self._saldo:.2f}.')
         print(f'Deposito de R${deposito:.2f} na conta <{self._conta}>.')
         print(f'Novo saldo: R${self._saldo:.2f}')
         print('------')
-
+    @log_execucao
     def sacar(self, saque):
         self.saque = saque
         if self._saldo >= saque:
@@ -35,7 +36,8 @@ class contaBancaria:
             print(f'Falha na tentativa de sacar R${saque:.2f}. Saldo em conta: R${self._saldo:.2f}.')
             print('nao tem dinheiro fdp vai toma no seu cu')
             print('------')
-
+            
+    @log_execucao
     def depositar_com_taxa(self, deposito, taxa):
         self._taxa_deposito = deposito * (taxa * 0.01)
         self._deposito_com_taxa = deposito - self._taxa_deposito
@@ -46,6 +48,7 @@ class contaBancaria:
         print(f'Taxa: {taxa}%. Valor da taxa: R${self._taxa_deposito:.2f}')
         print(f'Valor em saldo: R${self._saldo:.2f}.')
         print('------')
+    @log_execucao    
     def saque_com_bonus(self, saque, bonus):
         self._bonus_saque = saque * (bonus * 0.01)
         self._saque_com_bonus = saque + self._bonus_saque
@@ -66,10 +69,10 @@ class contaSalario(contaBancaria):
         self._saldo = saldo
         self._conta = conta
         self._id = id
-
+    @log_execucao
     def sacar(self, saque):
         return super().sacar(saque)
-        
+    @log_execucao
     def depositar(self, deposito=None):
         raise NotImplementedError('Impossível depositar na conta salário, seu merda')
     
