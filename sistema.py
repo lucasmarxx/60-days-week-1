@@ -1,6 +1,6 @@
 from context_manager_e_log import log_execucao
 import sqlite3
-
+import random
 
 class usuario:
     def __init__(self, nome, endereco):
@@ -69,7 +69,7 @@ class contaBancaria:
     def conectar_banco(self):
         self.conexao = sqlite3.connect('sqlite_db.db')
         self.cursor = self.conexao.cursor()
-        # self.conexao.commit()
+        
     @log_execucao
     def adicionar_dados_db(self):
         self.cursor.execute(f"""INSERT OR IGNORE INTO contas_bancarias
@@ -136,3 +136,23 @@ if __name__ == '__main__':
     conta3.conectar_banco()
     conta3.adicionar_dados_db()
     conta3.atualizar_dados_db()
+
+    conta4 = contaBancaria(35000, 45, 'zinha')
+    conta5 = contaBancaria(12500, 43, 'fabim')
+    conta6 = contaBancaria(54000, 31, 'rafinha')
+    conta7 = contaBancaria(40000, 37, 'marcinha')
+    conta8 = contaBancaria(45000, 11, 'valentina')
+
+    conta4.saque_com_bonus(1453, 10)
+    conta4.conectar_banco()
+    conta4.adicionar_dados_db()
+
+    novas_contas = [conta5, conta6, conta7, conta8] #codigo para facilitar entendimento e encher o db
+    for conta in novas_contas:
+        conta.saque_com_bonus(random.randint(50, 1000), random.randint(1, 25))
+        conta.conectar_banco()
+        conta.adicionar_dados_db()
+
+    conta_extra = contaBancaria(1, 3000, 'Brabor')
+    conta_extra.conectar_banco()
+    conta_extra.adicionar_dados_db()
