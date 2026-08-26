@@ -55,4 +55,25 @@ dado3 = {info3},
 dado4 = {info4}
 """)
 
+
+valor = int(input('digite um valor: '))
+cursor.execute(f"""SELECT * FROM contas_bancarias WHERE saldo >= {valor}""")
+
+check = cursor.fetchall()
+for info in check:
+    info1, info2, info3, info4 = info
+    print(f"""
+dado1 = {info1},
+dado2 = {info2},
+dado3 = {info3},
+dado4 = {info4}
+        """)
+
+cursor.execute("""UPDATE contas_bancarias
+                SET saldo = 3550
+                WHERE id = 1 
+                """)
+
+# cursor.execute('DELETE FROM contas_bancarias WHERE ') #WHERE id = 1 <exemplo>
+
 conexao.commit()
