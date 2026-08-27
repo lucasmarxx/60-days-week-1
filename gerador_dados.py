@@ -1,16 +1,26 @@
-import sqlite3
 import random
 from faker import Faker
 from context_manager_e_log import log_execucao
 
-conexao = sqlite3.connect('banco_loja.db')
-cursor = conexao.cursor()
+produtos_eletronicos = {
+    'smartphone': 1500,
+    'smart tv': 2300,
+    'monitor': 500,
+    'computador': 3500,
+    'tablet': 1200,
+    'caixa de som': 90,
+    'fone de ouvido': 50,
+    'carregador': 60,
+    'echo dot': 150,
+    'teclado': 60,
+    'mouse': 60
+}
 
-# gerar 3 tabelas (clientes, pedidos, itens) e fazer 10 consultas complexas
+# gerar 3 tabelas (clientes, produtos, vendas) p/ fazer consultas complexas
 
 
 
-class gera_dados_usuario:
+class gera_dados_cliente:
     def __init__(self, lingua, qtd):
         self.lingua = lingua
         self.quantidade = qtd
@@ -48,17 +58,29 @@ class gera_dados_usuario:
                 self.lista_telefones.append(f'(61){self.telefone}')
         return self.lista_telefones, len(self.lista_telefones)
 
+class gera_dados_produtos:
+    def __init__(self, produtos, qtd):
+        self.produtos = produtos
+        self.quantidade = qtd
+        self.chaves = list(produtos)
 
-dados_br = gera_dados_usuario('pt_BR', 20)
+    @log_execucao
+    def gera_produto(self):
+        self.lista_produtos = []
+        for _ in range(self.quantidade):
+            self.randomiza_estoque = random.randint(0, 105)
+            self.chave_randomizada = self.chaves[random.randint(0, len(self.produtos) -1)]
+            self.lista_produtos.append((self.chave_randomizada, self.produtos[self.chave_randomizada], self.randomiza_estoque))
+        return self.lista_produtos
 
-dados_br.gera_nomes()
-dados_br.gera_emails()
-dados_br.gera_telefone()
+# dados_br = gera_dados_cliente('pt_BR', 20)
 
-print(dados_br.lista_nomes, dados_br.emails, dados_br.lista_telefones)
+# dados_br.gera_nomes()
+# dados_br.gera_emails()
+# dados_br.gera_telefone()
+# print(dados_br.lista_nomes)
+# print('-----------.i.----------')
 
-# # print(lista_br)
-# print('------------------------------------------------------------------')
-# # print(lista_emails_br)
-# print('------------------------------------------------------------------')
-# # print(lista_telefones)
+produtos1 = gera_dados_produtos(produtos_eletronicos, 80)
+produtos1.gera_produto()
+print(produtos1.lista_produtos, len(produtos1.lista_produtos))
