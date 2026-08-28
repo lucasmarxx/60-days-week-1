@@ -104,7 +104,7 @@ class gera_dados_vendas:
         self.dias_entre = (self.data_fim - self.data_inicio).days
         self.data_dias_entre = random.randint(0, self.dias_entre)
         self.data_venda = self.data_inicio + timedelta(days=self.data_dias_entre)
-        self.data_formatada = self.data_venda.strftime('%d/%m/%Y')
+        self.data_formatada = self.data_venda.strftime('%Y-%m-%d')
         return self.data_formatada
     
     @log_execucao    

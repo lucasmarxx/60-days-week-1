@@ -58,8 +58,7 @@ dados_banco_3 = (banco3.data_formatada, banco3.id_cliente, banco3.id_produto, ba
 if __name__ == '__main__':
     conexao = sqlite3.connect('banco_loja.db')
     cursor = conexao.cursor()
-    for _ in range(3):
-        # banco3.buscar_ids()
+    for _ in range(600):
         banco3.gerar_datas()
         banco3.distribuir_vendas()
         cursor.executemany("""INSERT INTO vendas (data_venda, id_cliente, id_produto, quantidade, valor_total) VALUES (?, ?, ?, ?, ?)""",
