@@ -56,7 +56,7 @@ class gera_dados_cliente:
             else:
                 self.telefone += 149
                 self.lista_telefones.append(f'(61){self.telefone}')
-        return self.lista_telefones, len(self.lista_telefones)
+        return self.lista_telefones
 
 class gera_dados_produtos:
     def __init__(self, produtos, custo):
