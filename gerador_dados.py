@@ -1,25 +1,11 @@
 import random
 import sqlite3
-from faker import Faker
-from context_manager_e_log import log_execucao
+from faker import Faker 
+from log import log_execucao
 from datetime import datetime, timedelta
 
-produtos_eletronicos = {
-    'smartphone': 1500,
-    'smart tv': 2300,
-    'monitor': 500,
-    'computador': 3500,
-    'tablet': 1200,
-    'caixa de som': 90,
-    'fone de ouvido': 50,
-    'carregador': 60,
-    'echo dot': 150,
-    'teclado': 60,
-    'mouse': 60
-}
 
-
-class gerar_banco_vazio:
+class gerar_banco:
     def __init__(self, nome_banco):
         self.nome_banco = nome_banco
 
@@ -29,7 +15,7 @@ class gerar_banco_vazio:
         self.cursor = self.conexao.cursor()
         self.cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS clientes
-                (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                (id_cliente INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 email TEXT NOT NULL,
                 telefone TEXT NOT NULL UNIQUE)
@@ -115,6 +101,20 @@ class gera_dados_cliente:
 #e um valor inteiro que remete ao custo de cada item, calculada em base de %. exemplo: se passado
 #o numero 40, então o custo de cada produto é 40% do valor deste item.
 
+produtos_eletronicos = {
+    'smartphone': 1500,
+    'smart tv': 2300,
+    'monitor': 500,
+    'computador': 3500,
+    'tablet': 1200,
+    'caixa de som': 90,
+    'fone de ouvido': 50,
+    'carregador': 60,
+    'echo dot': 150,
+    'teclado': 60,
+    'mouse': 60
+}
+
 class gera_dados_produtos:
     def __init__(self, produtos, custo):
         self.produtos = produtos
@@ -135,14 +135,18 @@ class gera_dados_produtos:
 #A função gera_dados_vendas recebe como parâmetro o seu próprio banco de dados feito, para inserção
 #dos dados de venda.
 
-class gera_dados_vendas:
-    def __init__(self, banco_dados):
-        self.banco_dados = banco_dados
-        self.connection = sqlite3.connect(self.banco_dados)
+class gera_dados_vendas(gerar_banco):
+    def __init__(self, banco):
+        self.banco = banco
+        self.connection = sqlite3.connect(f'{self.banco}.db')
         self.cursor = self.connection.cursor()
-        self.cursor.execute('SELECT id_clientes FROM clientes')
+        self.cursor.execute('SELECT id FROM clientes')
+
+    def gera_banco(self):
+        return []
+
+    def gera_vendas(self):
         self.clientes_ids = [row[0] for row in self.cursor.fetchall()]
-        
         self.cursor.execute('SELECT id_produto, preco_venda FROM produtos')
         self.produtos = self.cursor.fetchall()
         self.produtos_ids = [row[0] for row in self.produtos]
@@ -160,7 +164,6 @@ class gera_dados_vendas:
         self.data_venda = self.data_inicio + timedelta(days=self.data_dias_entre)
         self.data_formatada = self.data_venda.strftime('%Y-%m-%d')
         return self.data_formatada
-    
     @log_execucao    
     def distribuir_vendas(self):
         self.id_cliente = random.choice(self.clientes_ids)
@@ -173,11 +176,31 @@ class gera_dados_vendas:
         return self.id_cliente, self.id_produto, self.quantidade_venda, self.valor_total
     
 if __name__ == '__main__':
-    produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
-    produtos1.gera_produto()
+    # banco_1 = gerar_banco_vazio('banco_1')
+    # banco_1.gera_banco()
 
-    gerador_clientes_teste = gera_dados_cliente('es', 5, 11)
-    gerador_clientes_teste.gera_cliente()
+    produtos_1 = gera_dados_produtos(produtos_eletronicos, 45)
+    produtos_1.gera_produto()
+    produtos_1_dados = produtos_1.lista_produtos
 
-    banco_teste = gerar_banco_vazio('banco_1')
-    banco_teste.gera_banco()
+    clientes_1 = gera_dados_cliente('es', 55, 11)
+    clientes_1.gera_cliente()
+    clientes_1_dados = list(zip(clientes_1.lista_nomes, clientes_1.emails, clientes_1.lista_telefones))
+    vendas_1 = gera_dados_vendas('banco_1')
+    vendas_1.gera_vendas()
+    vendas_1.gerar_datas()
+    vendas_1.distribuir_vendas()
+    
+    conexao = sqlite3.connect('banco_1.db')
+    cursor = conexao.cursor()
+
+    # cursor.executemany("""INSERT INTO clientes (nome, email, telefone) VALUES (?, ?, ?)""",
+                    # clientes_1_dados)
+
+    # cursor.executemany("""INSERT INTO produtos (produto, preco_venda, preco_custo, estoque_atual) VALUES (?, ?, ?, ?)""",
+                    # produtos_1_dados)
+
+    cursor.executemany("""INSERT INTO vendas (data_venda, id_cliente, id_produto, quantidade, valor_total) VALUES (?, ?, ?, ?, ?)""",
+                       [(vendas_1.data_formatada, vendas_1.id_cliente, vendas_1.id_produto, vendas_1.quantidade_venda, vendas_1.valor_total)])
+    conexao.commit()
+    conexao.close()
