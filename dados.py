@@ -2,7 +2,7 @@ import sqlite3
 from gerador_dados import gera_dados_cliente, gera_dados_produtos, gera_dados_vendas, produtos_eletronicos
 
 
-banco1 = gera_dados_cliente('pt_BR', 500)
+banco1 = gera_dados_cliente('pt_BR', 500, 11)
 banco1.gera_cliente()
 
 dados_banco_1 = list(zip(banco1.lista_nomes, banco1.emails, banco1.lista_telefones))

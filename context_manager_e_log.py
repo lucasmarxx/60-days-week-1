@@ -1,4 +1,3 @@
-
 def log_execucao(funcao):
     def wrapper(*args):
         funcao(*args)

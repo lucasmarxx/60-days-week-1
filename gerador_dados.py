@@ -3,7 +3,6 @@ import sqlite3
 from faker import Faker
 from context_manager_e_log import log_execucao
 from datetime import datetime, timedelta
-import calendar
 
 produtos_eletronicos = {
     'smartphone': 1500,
@@ -19,11 +18,58 @@ produtos_eletronicos = {
     'mouse': 60
 }
 
-# gerar 3 tabelas (clientes, produtos, vendas) p/ fazer consultas complexas
 
+class gerar_banco_vazio:
+    def __init__(self, nome_banco):
+        self.nome_banco = nome_banco
+
+    @log_execucao
+    def gera_banco(self):
+        self.conexao = sqlite3.connect(f'{self.nome_banco}.db') #conecta ou cria um banco
+        self.cursor = self.conexao.cursor()
+        self.cursor.execute(f"""
+                CREATE TABLE IF NOT EXISTS clientes
+                (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                nome TEXT NOT NULL,
+                email TEXT NOT NULL,
+                telefone TEXT NOT NULL UNIQUE)
+                """)
+
+        self.cursor.execute(f"""
+                CREATE TABLE IF NOT EXISTS produtos
+                (id_produto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                produto TEXT NOT NULL,
+                preco_venda INTEGER NOT NULL,
+                preco_custo INTEGER NOT NULL,
+                estoque_atual INTEGER NOT NULL)
+                """)
+
+        self.cursor.execute(f"""
+                CREATE TABLE IF NOT EXISTS vendas
+                (id_venda INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                data_venda TEXT NOT NULL,
+                id_cliente INTEGER,
+                id_produto INTEGER,
+                quantidade INTEGER NOT NULL,
+                valor_total INTEGER NOT NULL,
+                FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+                FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+                )
+                """)
+        self.conexao.commit()
+        self.conexao.close()
+
+
+# Gerar 3 tabelas (clientes, produtos, vendas) p/ fazer consultas complexas
+
+# A função gera_dados_cliente recebe uma string, que será uma linguagem aceita pela biblioteca faker (exemplo: 'pt_BR'), 
+# um número de nome de pessoas e um número que será o prefixo de telefone para essas pessoas.
+# Após gerar os nomes das pessoas e o número, ela vai replicar um email para esses nomes e criará um número de telefone contendo
+# o prefixo e nove números.
 
 class gera_dados_cliente:
-    def __init__(self, lingua, qtd):
+    def __init__(self, lingua: str, qtd: int, prefixo: int):
+        self.prefixo = prefixo
         self.lingua = lingua
         self.quantidade = qtd
 
@@ -52,7 +98,7 @@ class gera_dados_cliente:
         for nome in range(len(self.lista_nomes)):
             self.telefone = random.randint(923_400_030, 999_999_999)
             if f'(61){self.telefone}' not in self.lista_telefones:
-                self.lista_telefones.append(f'(61){self.telefone}')
+                self.lista_telefones.append(f'({self.prefixo}){self.telefone}')
             else:
                 self.telefone += 149
                 self.lista_telefones.append(f'(61){self.telefone}')
@@ -63,6 +109,11 @@ class gera_dados_cliente:
         self.gera_emails()
         self.gera_telefone()
         return self.lista_nomes, self.emails, self.lista_telefones
+
+
+#A função gera_dados_produtos recebe um dicionário de produtos (neste caso, na variável produtos_eletronicos),
+#e um valor inteiro que remete ao custo de cada item, calculada em base de %. exemplo: se passado
+#o numero 40, então o custo de cada produto é 40% do valor deste item.
 
 class gera_dados_produtos:
     def __init__(self, produtos, custo):
@@ -80,6 +131,9 @@ class gera_dados_produtos:
             self.lista_produtos.append(self.dados)
 
         return self.lista_produtos
+
+#A função gera_dados_vendas recebe como parâmetro o seu próprio banco de dados feito, para inserção
+#dos dados de venda.
 
 class gera_dados_vendas:
     def __init__(self, banco_dados):
@@ -119,19 +173,19 @@ class gera_dados_vendas:
         return self.id_cliente, self.id_produto, self.quantidade_venda, self.valor_total
     
 if __name__ == '__main__':
-    # produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
-    # produtos1.gera_produto()
-    # print(produtos1.lista_produtos, len(produtos1.lista_produtos))
+    produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
+    produtos1.gera_produto()
+    print(produtos1.lista_produtos, len(produtos1.lista_produtos))
     # conexao = sqlite3.connect('sqlite_db.db')
     # cursor = conexao.cursor()
 
-    # produtos = gera_dados_vendas('sqlite_db.db')
-    # produtos.buscar_ids()
+    produtos = gera_dados_vendas('sqlite_db.db')
     # produtos.gerar_datas()
     # produtos.distribuir_vendas()
 
     # print(produtos.quantidade_venda)
-    # gerador_clientes_teste = gera_dados_cliente('es', 5)
+    gerador_clientes_teste = gera_dados_cliente('es', 5, 11)
     # gerador_clientes_teste.gera_cliente()
     # print(gerador_clientes_teste.lista_nomes, gerador_clientes_teste.emails, gerador_clientes_teste.lista_telefones)
-    ...
+    teste = gerar_banco_vazio('banco_foda')
+    teste.gera_banco()
