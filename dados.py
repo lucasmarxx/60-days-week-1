@@ -36,7 +36,7 @@ cursor = conexao.cursor()
 
 cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS vendas
-                (id_venda INTEGER NOT NULL UNIQUE,
+                (id_venda INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 data_venda TEXT NOT NULL,
                 id_cliente INTEGER,
                 id_produto INTEGER,
@@ -47,6 +47,9 @@ cursor.execute(f"""
                 )
                 """)
 
+cursor.execute('SELECT id_clientes FROM clientes')
+
+
 
 if __name__ == '__main__':
 #   cursor.executemany(
@@ -55,7 +58,7 @@ if __name__ == '__main__':
 #   print(f'{len(dados_banco_1)} colunas adicionadas')
     # cursor.executemany('INSERT INTO produtos (produto, preco_venda, preco_custo, estoque_atual) VALUES (?, ?, ?, ?)',
     #                     dados_banco_2)
-    # cursor.execute('DROP TABLE IF EXISTS produtos')
+    # cursor.execute('DROP TABLE IF EXISTS vendas')
     # cursor.execute('ALTER TABLE clientes RENAME COLUMN id TO id_clientes')
     conexao.commit()
     conexao.close()
