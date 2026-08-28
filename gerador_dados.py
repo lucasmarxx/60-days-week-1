@@ -175,17 +175,9 @@ class gera_dados_vendas:
 if __name__ == '__main__':
     produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
     produtos1.gera_produto()
-    print(produtos1.lista_produtos, len(produtos1.lista_produtos))
-    # conexao = sqlite3.connect('sqlite_db.db')
-    # cursor = conexao.cursor()
 
-    produtos = gera_dados_vendas('sqlite_db.db')
-    # produtos.gerar_datas()
-    # produtos.distribuir_vendas()
-
-    # print(produtos.quantidade_venda)
     gerador_clientes_teste = gera_dados_cliente('es', 5, 11)
-    # gerador_clientes_teste.gera_cliente()
-    # print(gerador_clientes_teste.lista_nomes, gerador_clientes_teste.emails, gerador_clientes_teste.lista_telefones)
-    teste = gerar_banco_vazio('banco_foda')
-    teste.gera_banco()
+    gerador_clientes_teste.gera_cliente()
+
+    banco_teste = gerar_banco_vazio('banco_1')
+    banco_teste.gera_banco()
