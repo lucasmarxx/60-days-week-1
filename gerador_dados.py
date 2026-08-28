@@ -39,14 +39,12 @@ class gera_dados_cliente:
             else:
                 self.lista_nomes.append(nome[1])
 
-        return self.lista_nomes
 
     @log_execucao
     def gera_emails(self):
         self.emails = []
         for nome in self.lista_nomes:
             self.emails.append(f'{nome.lower()}@email.com')
-        return self.emails    
 
     @log_execucao
     def gera_telefone(self):
@@ -58,7 +56,13 @@ class gera_dados_cliente:
             else:
                 self.telefone += 149
                 self.lista_telefones.append(f'(61){self.telefone}')
-        return self.lista_telefones
+
+    @log_execucao
+    def gera_cliente(self):
+        self.gera_nomes()
+        self.gera_emails()
+        self.gera_telefone()
+        return self.lista_nomes, self.emails, self.lista_telefones
 
 class gera_dados_produtos:
     def __init__(self, produtos, custo):
@@ -80,18 +84,16 @@ class gera_dados_produtos:
 class gera_dados_vendas:
     def __init__(self, banco_dados):
         self.banco_dados = banco_dados
-        self.connection = sqlite3.connect(banco_dados)
+        self.connection = sqlite3.connect(self.banco_dados)
         self.cursor = self.connection.cursor()
-
-    @log_execucao
-    def buscar_ids(self):
         self.cursor.execute('SELECT id_clientes FROM clientes')
         self.clientes_ids = [row[0] for row in self.cursor.fetchall()]
-
+        
         self.cursor.execute('SELECT id_produto, preco_venda FROM produtos')
         self.produtos = self.cursor.fetchall()
         self.produtos_ids = [row[0] for row in self.produtos]
         self.precos_produtos = {row[0]: row[1] for row in self.produtos}
+    
 
     @log_execucao
     def gerar_datas(self):
@@ -120,12 +122,16 @@ if __name__ == '__main__':
     # produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
     # produtos1.gera_produto()
     # print(produtos1.lista_produtos, len(produtos1.lista_produtos))
-    conexao = sqlite3.connect('sqlite_db.db')
-    cursor = conexao.cursor()
+    # conexao = sqlite3.connect('sqlite_db.db')
+    # cursor = conexao.cursor()
 
-    produtos = gera_dados_vendas('sqlite_db.db')
-    produtos.buscar_ids()
-    produtos.gerar_datas()
-    produtos.distribuir_vendas()
+    # produtos = gera_dados_vendas('sqlite_db.db')
+    # produtos.buscar_ids()
+    # produtos.gerar_datas()
+    # produtos.distribuir_vendas()
 
-    print(produtos.quantidade_venda)
+    # print(produtos.quantidade_venda)
+    # gerador_clientes_teste = gera_dados_cliente('es', 5)
+    # gerador_clientes_teste.gera_cliente()
+    # print(gerador_clientes_teste.lista_nomes, gerador_clientes_teste.emails, gerador_clientes_teste.lista_telefones)
+    ...

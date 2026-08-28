@@ -2,24 +2,24 @@ import sqlite3
 from gerador_dados import gera_dados_cliente, gera_dados_produtos, gera_dados_vendas, produtos_eletronicos
 
 
-# banco1 = gera_dados_cliente('pt_BR', 500)
-# banco1.gera_nomes()
-# banco1.gera_emails()
-# banco1.gera_telefone()
+banco1 = gera_dados_cliente('pt_BR', 500)
+banco1.gera_cliente()
 
-# dados_banco_1 = list(zip(banco1.lista_nomes, banco1.emails, banco1.lista_telefones))
+dados_banco_1 = list(zip(banco1.lista_nomes, banco1.emails, banco1.lista_telefones))
+# print(dados_banco_1)
 
+banco2 = gera_dados_produtos(produtos_eletronicos, 45)
+banco2.gera_produto()
 
-# banco2 = gera_dados_produtos(produtos_eletronicos, 45)
-# banco2.gera_produto()
-
-# dados_banco_2 = banco2.lista_produtos
+dados_banco_2 = banco2.lista_produtos
 
 banco3 = gera_dados_vendas('banco_loja.db')
+banco3.gerar_datas()
+banco3.distribuir_vendas()
+
+dados_banco_3 = (banco3.data_formatada, banco3.id_cliente, banco3.id_produto, banco3.quantidade_venda, banco3.valor_total)
 
 
-conexao = sqlite3.connect('banco_loja.db')
-cursor = conexao.cursor()
 
 # # cursor.execute(f"""
 #                 CREATE TABLE IF NOT EXISTS clientes
@@ -56,19 +56,13 @@ cursor = conexao.cursor()
 
 
 if __name__ == '__main__':
-#   cursor.executemany(
-#      'INSERT INTO clientes (nome, email, telefone) VALUES (?, ?, ?)',
-#      dados_banco_1)
-#   print(f'{len(dados_banco_1)} colunas adicionadas')
-    for _ in range(120):
-        banco3.buscar_ids()
+    conexao = sqlite3.connect('banco_loja.db')
+    cursor = conexao.cursor()
+    for _ in range(3):
+        # banco3.buscar_ids()
         banco3.gerar_datas()
         banco3.distribuir_vendas()
         cursor.executemany("""INSERT INTO vendas (data_venda, id_cliente, id_produto, quantidade, valor_total) VALUES (?, ?, ?, ?, ?)""",
                         [(banco3.data_formatada, banco3.id_cliente, banco3.id_produto, banco3.quantidade_venda, banco3.valor_total)])
-    # cursor.execute('DROP TABLE IF EXISTS vendas')
-    # cursor.execute('ALTER TABLE clientes RENAME COLUMN id TO id_clientes')
-
-    # print(f'data venda: {banco3.data_formatada}, id do cliente: {banco3.id_cliente}, id do produto: {banco3.id_produto}, quantidade de vendas: {banco3.quantidade_venda}, valor total: {banco3.valor_total}')
     conexao.commit()
     conexao.close()
