@@ -59,28 +59,24 @@ class gera_dados_cliente:
         return self.lista_telefones, len(self.lista_telefones)
 
 class gera_dados_produtos:
-    def __init__(self, produtos, qtd):
+    def __init__(self, produtos, custo):
         self.produtos = produtos
-        self.quantidade = qtd
+        self.custo_padrao = custo
         self.chaves = list(produtos)
-
+    
     @log_execucao
     def gera_produto(self):
         self.lista_produtos = []
-        for _ in range(self.quantidade):
-            self.randomiza_estoque = random.randint(0, 105)
-            self.chave_randomizada = self.chaves[random.randint(0, len(self.produtos) -1)]
-            self.lista_produtos.append((self.chave_randomizada, self.produtos[self.chave_randomizada], self.randomiza_estoque))
+        for nome, preco in self.produtos.items():
+            self.estoque_randomizado = random.randint(25, 125)
+            self.custo = round(preco * (self.custo_padrao * 0.01), 2) #custo = % do valor do preço
+            self.dados = (nome, preco, self.custo, self.estoque_randomizado)
+            self.lista_produtos.append(self.dados)
+
         return self.lista_produtos
 
-# dados_br = gera_dados_cliente('pt_BR', 20)
 
-# dados_br.gera_nomes()
-# dados_br.gera_emails()
-# dados_br.gera_telefone()
-# print(dados_br.lista_nomes)
-# print('-----------.i.----------')
-
-produtos1 = gera_dados_produtos(produtos_eletronicos, 80)
-produtos1.gera_produto()
-print(produtos1.lista_produtos, len(produtos1.lista_produtos))
+if __name__ == '__main__':
+    produtos1 = gera_dados_produtos(produtos_eletronicos, 45)
+    produtos1.gera_produto()
+    print(produtos1.lista_produtos, len(produtos1.lista_produtos))
