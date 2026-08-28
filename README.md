@@ -1,14 +1,20 @@
-# GERADOR DE BANCOS DE DADOS
+# SEMANA 01 DO CRONOGRAMA
+
+## PROJETOS FEITOS DURANTE OS ESTUDOS E 'MÃO NA MASSA' QUE DESEJEI ADICIONAR AO REPOSITÓRIO
+
+---
+
+# 1. GERADOR DE BANCOS DE DADOS
 
 
 ---
 
-## Sobre o Projeto
+## 📋 Sobre o Projeto
 Este programa é para quem quer gerar seus próprios dados e inserir eles em um bancos sem buscar algum que esteja pronto, para um estudo rápido de queries em sql, com dados que você pode observar sendo gerados. 
 
 ---
 
-## Funcionalidades
+## 🚀 Funcionalidades
  
  Gera dados para três tabelas possíveis para estudos e práticas com query em sql.
   
@@ -22,7 +28,7 @@ Este programa é para quem quer gerar seus próprios dados e inserir eles em um 
 
 ---
 
-## Stack Tecnológica
+## 🛠️ Stack Tecnológica
 
   - Python 3 
     - Bibliotecas: random, sqlite3, faker, datetime
