@@ -1,19 +1,6 @@
 import sqlite3
 from gerador_dados import gera_dados_cliente, gera_dados_produtos, gera_dados_vendas
 
-produtos_eletronicos = {
-    'smartphone': 1500,
-    'smart tv': 2300,
-    'monitor': 500,
-    'computador': 3500,
-    'tablet': 1200,
-    'caixa de som': 90,
-    'fone de ouvido': 50,
-    'carregador': 60,
-    'echo dot': 150,
-    'teclado': 60,
-    'mouse': 60
-}
 
 banco1 = gera_dados_cliente('pt_BR', 500, 11)
 banco1.gera_cliente()
