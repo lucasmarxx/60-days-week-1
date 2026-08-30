@@ -101,19 +101,36 @@ class gera_dados_cliente:
 #e um valor inteiro que remete ao custo de cada item, calculada em base de %. exemplo: se passado
 #o numero 40, então o custo de cada produto é 40% do valor deste item.
 
-produtos_eletronicos = {
-    'smartphone': 1500,
-    'smart tv': 2300,
-    'monitor': 500,
-    'computador': 3500,
-    'tablet': 1200,
-    'caixa de som': 90,
-    'fone de ouvido': 50,
-    'carregador': 60,
-    'echo dot': 150,
-    'teclado': 60,
-    'mouse': 60
+produtos = {
+    'eletronicos':
+    {
+        'smartphone': 1500,
+        'smart tv': 2300,
+        'monitor': 500,
+        'computador': 3500,
+        'tablet': 1200,
+        'caixa de som': 90,
+        'fone de ouvido': 50,
+        'carregador': 60,
+        'echo dot': 150,
+        'teclado': 60,
+        'mouse': 60
+    },
+    'eletrodomesticos':{
+        'geladeira': 3000,
+        'fogao': 2300,
+        'cooktop': 1200,
+        'air fryer': 600,
+        'forno eletrico': 760,
+        'micro-ondas': 250,
+        'freezer': 3000,
+        'depurador de ar': 450,
+        'lava-louças': 540,
+        'maquina de lavar roupas': 2500 
+    }
 }
+
+
 
 class gera_dados_produtos:
     def __init__(self, produtos, custo):
@@ -179,7 +196,7 @@ if __name__ == '__main__':
     # banco_1 = gerar_banco_vazio('banco_1')
     # banco_1.gera_banco()
 
-    produtos_1 = gera_dados_produtos(produtos_eletronicos, 45)
+    produtos_1 = gera_dados_produtos(produtos['eletronicos'], 45)
     produtos_1.gera_produto()
     produtos_1_dados = produtos_1.lista_produtos
 
