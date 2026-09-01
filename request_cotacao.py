@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from fastapi import FastAPI
+import pprint
 from minha_key_api_nao_upar import chave
 
 app = FastAPI()
@@ -22,6 +23,5 @@ def testar_moeda(moedas):
     resposta = requests.get(f'https://economia.awesomeapi.com.br/json/last/{moedas}')
     return resposta.json()
 
-testar_moeda('USD-BRL')
 moeda = testar_moeda('USD-BRL')
-print(moeda)
+pprint.pprint(moeda)
