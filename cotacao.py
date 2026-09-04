@@ -19,7 +19,7 @@ def requestar():
         return {'erro': f'status: {resposta.status_code}'}
 
 requesta_status = requestar()
-pprint.pprint(requesta_status)
+# pprint.pprint(requesta_status)
 
 @app.get('/get-data')
 def pegar_cotacao(moedas):
@@ -29,8 +29,20 @@ def pegar_cotacao(moedas):
 cotacao_dolar = pegar_cotacao('USD-BRL')
 cotacao_euro = pegar_cotacao('EUR-BRL')
 
-valor_atual_dolar = cotacao_dolar['USDBRL']['bid']
-valor_atual_euro = cotacao_euro['EURBRL']['bid']
+# pprint.pprint(cotacao_dolar)
+
+dados_dolar = cotacao_dolar['USDBRL']
+dados_euro = cotacao_euro['EURBRL']
+
+
+# pprint.pprint(dados_dolar)
+# print(add_dados_dolar)
+
+# ordem na tabela:
+# name => nome
+# bid => preco
+# pctchange => variacao
+# code => moeda
 
 conexao = sqlite3.connect('banco_cotacoes.db')
 cursor = conexao.cursor()
@@ -44,7 +56,19 @@ cursor = conexao.cursor()
 #                 data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
 #                 )
 #                 """)
-cursor.execute(f"""
-                ALTER TABLE cotacoes ADD COLUMN moeda TEXT
-""")
+# cursor.execute(f"""
+#                 ALTER TABLE cotacoes ADD COLUMN moeda TEXT
+# """)
+
+def adiciona_cotacao_dolar(dados):
+    cursor.executemany(f"""
+                    INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
+                    """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
+def adiciona_cotacao_euro(dados):
+    cursor.executemany(f"""
+                    INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
+                    """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
+adiciona_cotacao_dolar(dados_dolar)
+adiciona_cotacao_euro(dados_euro)
+
 conexao.commit()
