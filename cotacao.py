@@ -4,8 +4,9 @@ from fastapi import FastAPI
 import pprint
 from minha_key import chave
 import sqlite3
-from datetime import datetime
-
+# import schedule
+from datetime import datetime, timedelta
+import time
 
 app = FastAPI()
 chave_api = chave
@@ -64,11 +65,26 @@ def adiciona_cotacao_dolar(dados):
     cursor.executemany(f"""
                     INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
                     """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
+    conexao.commit()
+
 def adiciona_cotacao_euro(dados):
     cursor.executemany(f"""
                     INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
                     """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
-adiciona_cotacao_dolar(dados_dolar)
-adiciona_cotacao_euro(dados_euro)
+    conexao.commit()
+hora_limite = 15
+proxima_execucao = datetime.now()
 
-conexao.commit()
+while True:
+    agora = datetime.now()
+    if agora.hour >= hora_limite:
+        print('Deu a hora, encerrando adição de cotações!')
+        break
+
+    if agora >= proxima_execucao:
+        adiciona_cotacao_dolar(dados_dolar)
+        adiciona_cotacao_euro(dados_euro)
+        proxima_execucao = agora + timedelta(minutes=10)
+        print(f'Cotações adicionadas. Próxima execução: {proxima_execucao.strftime('%H:%M:%S')}')
+
+    time.sleep(1)
