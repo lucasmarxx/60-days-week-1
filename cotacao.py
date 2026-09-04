@@ -7,6 +7,7 @@ import sqlite3
 # import schedule
 from datetime import datetime, timedelta
 import time
+from log import log_execucao
 
 app = FastAPI()
 chave_api = chave
@@ -61,18 +62,21 @@ cursor = conexao.cursor()
 #                 ALTER TABLE cotacoes ADD COLUMN moeda TEXT
 # """)
 
+@log_execucao
 def adiciona_cotacao_dolar(dados):
     cursor.executemany(f"""
                     INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
                     """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
     conexao.commit()
 
+@log_execucao
 def adiciona_cotacao_euro(dados):
     cursor.executemany(f"""
                     INSERT INTO cotacoes (nome, preco, variacao, moeda) VALUES (?, ?, ?, ?)
                     """, [(dados['name'], float(dados['bid']), float(dados['pctChange']), dados['code'])])
     conexao.commit()
-hora_limite = 15
+
+hora_limite = 19
 proxima_execucao = datetime.now()
 
 while True:
